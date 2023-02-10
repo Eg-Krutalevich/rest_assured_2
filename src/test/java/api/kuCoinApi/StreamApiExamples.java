@@ -10,7 +10,6 @@ import static io.restassured.RestAssured.given;
 
 public class StreamApiExamples {
 
-    //GET
     public List<TickerData> getTickers() {
         return given()
                 .contentType(ContentType.JSON)
@@ -20,14 +19,12 @@ public class StreamApiExamples {
                 .extract().jsonPath().getList("data.ticker", TickerData.class);
     }
 
-    //получение всех названий, которые оканчиваются на USDT
     @Test
     public void checkCrypto() {
         List<TickerData> usdTickers = getTickers().stream().filter(x -> x.getSymbol().endsWith("USDT")).toList();
         Assertions.assertTrue(usdTickers.stream().allMatch(x -> x.getSymbol().endsWith("USDT")));
     }
 
-    //сортировка по убыванию, ограничение на 10 названий
     @Test
     public void sortHightToLow() {
         List<TickerData> highToLow = getTickers().stream().filter(x -> x.getSymbol().endsWith("USDT")).sorted((o1, o2) -> o2.getChangeRate().compareTo(o1.getChangeRate())).toList();
@@ -35,7 +32,6 @@ public class StreamApiExamples {
         Assertions.assertEquals(top10.get(0).getSymbol(), "GALAX3L-USDT");
     }
 
-    //сортировка по возрастанию с ограничением в 10
     @Test
     public void sortLowToHigh() {
         List<TickerData> lowToHight = getTickers().stream().filter(x -> x.getSymbol().endsWith("USDT"))
@@ -43,7 +39,6 @@ public class StreamApiExamples {
 
     }
 
-    //нахождение key и value в usd
     @Test
     public void firstMap() {
         Map<String, Float> usd = new HashMap<>();
@@ -51,7 +46,6 @@ public class StreamApiExamples {
         getTickers().forEach(x -> usd.put(x.getSymbol(), Float.parseFloat(x.getChangeRate())));
     }
 
-    //вывод только с name и changeRate
     @Test
     public void secondMap() {
         List<TickerShort> shortList = new ArrayList<>();
